@@ -11,9 +11,9 @@ const Search = React.memo(props => {
 
   useEffect( () => {
     const inputTimer = setTimeout( () => {
-      console.log('Inside setTimeout()');
+      console.log('[Search] Inside setTimeout()');
       if (filterText === inputRef.current.value) {
-        console.log('call filter ingredients API');
+        console.log('[Search] call filter ingredients API');
         async function fetchIngredients() {
           const queryParams = filterText.trim().length === 0 ? '' : `?orderBy="title"&equalTo="${filterText}"`;
           const response = await fetch(`https://react-hooks-54d9e-default-rtdb.firebaseio.com/ingredients.json${queryParams}`);
@@ -36,19 +36,27 @@ const Search = React.memo(props => {
                 amount: responseData[key].amount
               });
             }
-            onFilterIngredients(loadedIngredients);
+            onFilterIngredients(loadedIngredients, filterText);
           })
           .catch(error => console.log(error));
       } else {
-        console.log('Text before 500ms did not match');
+        console.log('[Search] Text before 500ms did not match');
       }
     }, 500);
 
     return () => {
-      console.log('Inside clear timer');
+      console.log('[Search] Inside clear timer');
       clearTimeout(inputTimer);
     }
   }, [filterText, onFilterIngredients, inputRef]); // Works as a componentDidMount if empty array is passed
+
+  useEffect(() => {
+    console.log('[Search] Mounted');
+
+    return () => {
+      console.log('[Search] Unmounted');
+    }
+  }, []);
 
   return (
     <section className="search">
